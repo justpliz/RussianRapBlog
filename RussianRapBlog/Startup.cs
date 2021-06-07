@@ -41,6 +41,7 @@ namespace RussianRapBlog
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
             });
         }
     }
