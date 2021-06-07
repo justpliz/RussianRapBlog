@@ -3,3 +3,13 @@
 ################################################################################
 
 /App/obj
+/App/bin/Debug/net5.0
+/Database/obj
+/Dto/bin/Debug/net5.0
+/Dto/obj
+/Models/bin/Debug/net5.0
+/Models/obj
+/RussianRapBlog/bin/Debug/net5.0
+/RussianRapBlog/obj
+/Database/bin/Debug/net5.0
+/.vs
