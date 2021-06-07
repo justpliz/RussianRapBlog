@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Database;
-using Microsoft.EntityFrameworkCore;
 using Services;
 
 namespace RussianRapBlog
@@ -14,12 +13,11 @@ namespace RussianRapBlog
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var con = @"Server=(localdb)\mssqllocaldb;Database=BlogDb;Trusted_Connection=True;"; //TODO вынести
             services.AddControllers();
             services.AddMvc();
             services.AddSwaggerGen();
-            services.AddDbContext<RussianRapBlogContext>(options => options.UseSqlServer(con));
-            services.AddTransient<IPostService, PostService>();
+            services.AddDbContext<RussianRapBlogContext>();
+            services.AddScoped<IPostService, PostService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
