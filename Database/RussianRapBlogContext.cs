@@ -1,21 +1,15 @@
-﻿using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Database
 {
     /// <summary>
-    /// Контекст приложения
+    ///     Контекст приложения
     /// </summary>
-    public class RussianRapBlogContext:DbContext
+    public class RussianRapBlogContext : DbContext
     {
         /// <summary>
-        /// Посты
-        /// </summary>
-        public DbSet<Post> Posts { get; set; }
-
-        /// <summary>
-        /// Конструктор
+        ///     Конструктор
         /// </summary>
         public RussianRapBlogContext(DbContextOptions<RussianRapBlogContext> options)
         {
@@ -23,7 +17,17 @@ namespace Database
         }
 
         /// <summary>
-        /// Конфигурация
+        ///     Посты
+        /// </summary>
+        public DbSet<Post> Posts { get; set; }
+
+        /// <summary>
+        ///     Изображения
+        /// </summary>
+        public DbSet<Image> Images { get; set; }
+
+        /// <summary>
+        ///     Конфигурация
         /// </summary>
         /// <param name="optionsBuilder">Конструктор опций</param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,5 +35,4 @@ namespace Database
             optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=BlogDb;Trusted_Connection=True");
         }
     }
-    
 }
