@@ -9,8 +9,4 @@
     <ProjectReference Include="..\Dto\Dto.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
 </Project>
