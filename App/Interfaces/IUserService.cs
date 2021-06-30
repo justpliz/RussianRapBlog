@@ -11,8 +11,15 @@ namespace Services.Interfaces
         /// <summary>
         ///     Зарегистрировать нового пользователя
         /// </summary>
-        /// <param name="dto"></param>
-        /// <returns></returns>
+        /// <param name="dto">Dto пользователя</param>
+        /// <returns>Ответ</returns>
         public Task<string> RegisterAsync(RegisterDto dto);
+
+        /// <summary>
+        ///     Получить токен авторизации
+        /// </summary>
+        /// <param name="dto">Dto авторизации</param>
+        /// <returns>Ответ на авторизацию</returns>
+        Task<AuthenticationResponseDto> GetTokenAsync(TokenRequestDto dto);
     }
 }

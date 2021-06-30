@@ -24,10 +24,17 @@ namespace RussianRapBlog.Controllers
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        [HttpPost("register")]
+        [HttpPost("register")] //TODO Валидация данных
         public async Task<ActionResult> RegisterAsync(RegisterDto dto)
         {
             var result = await _userService.RegisterAsync(dto);
+            return Ok(result);
+        }
+
+        [HttpPost("token")]
+        public async Task<IActionResult> GetTokenAsync(TokenRequestDto dto)
+        {
+            var result = await _userService.GetTokenAsync(dto);
             return Ok(result);
         }
     }

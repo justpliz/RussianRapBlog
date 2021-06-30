@@ -57,7 +57,7 @@ namespace RussianRapBlog.Controllers
         /// </summary>
         /// <param name="text">Текст поста</param>
         /// <param name="images">Изображения</param>
-        [Authorize]
+        [Authorize(Roles = "User")]
         [HttpPost("{text}")] //TODO Валидация изображений
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
