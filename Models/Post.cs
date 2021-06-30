@@ -12,7 +12,7 @@ namespace Models
     {
         public Post()
         {
-            Images = new Collection<Image>();
+            Images = new Collection<ImageModel>();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Models
         /// <summary>
         ///     Изображения
         /// </summary>
-        public ICollection<Image> Images { get; set; }
+        public ICollection<ImageModel> Images { get; set; }
 
         /// <Inheritdoc />
         public int Id { get; set; }

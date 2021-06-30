@@ -60,12 +60,11 @@ namespace RussianRapBlog.Controllers
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
             await using var imageStream = new MemoryStream();
-            var splittedImages = new List<Image>();
+            var splittedImages = new List<ImageModel>();
             foreach (var image in images)
             {
-                byte[] buffer;
                 await image.CopyToAsync(imageStream);
-                splittedImages.Add(new Image {Data = imageStream.GetBuffer()});
+                splittedImages.Add(new ImageModel {Data = imageStream.GetBuffer()});
             }
 
             await _postService.CreatePostAsync(text, splittedImages);

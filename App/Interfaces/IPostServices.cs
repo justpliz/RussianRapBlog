@@ -22,7 +22,7 @@ namespace Services
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        Task CreatePostAsync(string text, List<Image> images); //TODO возврат поста
+        Task CreatePostAsync(string text, List<ImageModel> images); //TODO возврат поста
 
         /// <summary>
         ///     Получить изображения поста

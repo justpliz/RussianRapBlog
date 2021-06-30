@@ -36,17 +36,17 @@ namespace Services
         }
 
         /// <inheritdoc />
-        public async Task CreatePostAsync(string text, List<Image> images) //TODO возврат поста
-        {
-            await _context.Posts.AddAsync(new Post {Text = text, CreationDate = DateTime.Now, Images = images});
-            await _context.SaveChangesAsync();
-        }
-
-        /// <inheritdoc />
         public async Task<List<byte[]>> GetPostImagesAsync(int id)
         {
             var post = await _context.Posts.Include(o => o.Images).SingleOrDefaultAsync(p => p.Id == id);
             return post.Images.Select(p => p.Data).ToList();
+        }
+
+        /// <inheritdoc />
+        public async Task CreatePostAsync(string text, List<ImageModel> images) //TODO возврат поста
+        {
+            await _context.Posts.AddAsync(new Post {Text = text, CreationDate = DateTime.Now, Images = images});
+            await _context.SaveChangesAsync();
         }
     }
 }

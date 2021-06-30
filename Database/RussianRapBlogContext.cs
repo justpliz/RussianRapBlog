@@ -24,7 +24,7 @@ namespace Database
         /// <summary>
         ///     Изображения
         /// </summary>
-        public DbSet<Image> Images { get; set; }
+        public DbSet<ImageModel> Images { get; set; }
 
         /// <summary>
         ///     Конфигурация

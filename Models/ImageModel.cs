@@ -5,7 +5,7 @@ namespace Models
     /// <summary>
     ///     Изображение
     /// </summary>
-    public class Image : IEntity
+    public class ImageModel : IEntity
     {
         /// <summary>
         ///     Имя изображения
