@@ -39,7 +39,7 @@ namespace Services
         public async Task<List<byte[]>> GetPostImagesAsync(int id)
         {
             var post = await _context.Posts.Include(o => o.Images).SingleOrDefaultAsync(p => p.Id == id);
-            return post.Images.Select(p => p.Data).ToList();
+            return post?.Images.Select(p => p.Data).ToList();
         }
 
         /// <inheritdoc />

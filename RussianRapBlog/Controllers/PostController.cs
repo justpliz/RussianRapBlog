@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -56,6 +57,7 @@ namespace RussianRapBlog.Controllers
         /// </summary>
         /// <param name="text">Текст поста</param>
         /// <param name="images">Изображения</param>
+        [Authorize]
         [HttpPost("{text}")] //TODO Валидация изображений
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
