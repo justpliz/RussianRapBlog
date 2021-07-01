@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Database;
 using Dto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Services.Interfaces;
 
 namespace Services
 {
@@ -43,10 +47,32 @@ namespace Services
         }
 
         /// <inheritdoc />
-        public async Task CreatePostAsync(string text, List<ImageModel> images) //TODO возврат поста
+        public async Task CreatePostAsync(string text, IFormFileCollection images) //TODO возврат поста
         {
-            await _context.Posts.AddAsync(new Post {Text = text, CreationDate = DateTime.Now, Images = images});
+            await _context.Posts.AddAsync(new Post
+                {Text = text, CreationDate = DateTime.Now, Images = await SplitImages(images)});
             await _context.SaveChangesAsync();
+        }
+
+        private async Task<List<ImageModel>> SplitImages(IFormFileCollection images)
+        {
+            await using var imageStream = new MemoryStream();
+            var splittedImages = new List<ImageModel>();
+            foreach (var image in images)
+            {
+                await image.CopyToAsync(imageStream);
+                try
+                {
+                    Image.FromStream(imageStream);
+                    splittedImages.Add(new ImageModel {Data = imageStream.GetBuffer()});
+                }
+                catch (ArgumentException e)
+                {
+                    throw new Exception("Некорректное изображение");
+                }
+            }
+
+            return splittedImages;
         }
     }
 }

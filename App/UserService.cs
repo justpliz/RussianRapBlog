@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dto;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models;
@@ -19,15 +20,17 @@ namespace Services
     public class UserService : IUserService
     {
         private readonly JWT _jwt;
+        private readonly ILogger<UserService> _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
 
         public UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
-            IOptions<JWT> jwt)
+            IOptions<JWT> jwt, ILogger<UserService> logger)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwt = jwt.Value;
+            _logger = logger;
         }
 
         /// <inheritdoc />
@@ -41,29 +44,33 @@ namespace Services
             };
             var userWithSameEmail = await _userManager.FindByEmailAsync(dto.Email);
             if (userWithSameEmail != null)
-                return $"Email {user.Email} is already registered.";
+                return $"Email {user.Email} занят.";
 
             var result = await _userManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
-                throw new Exception("Не удалось создать пользователя"); //TODO Добавить вывод ошибок из result
+            {
+                var errors = string.Join("/", result.Errors.Select(e => e.ToString()).ToList());
+                throw new Exception($"Не удалось создать пользователя {errors}");
+            }
 
             await _userManager.AddToRoleAsync(user, Roles.User.ToString());
-            return $"User Registered with username {user.UserName}";
+            _logger.LogInformation($"Пользователь {user.UserName} зарегистрирован");
+            return $"Пользователь {user.UserName} зарегистрирован";
         }
 
         /// <inheritdoc />
-        public async Task<AuthenticationResponseDto> GetTokenAsync(TokenRequestDto model)
+        public async Task<AuthenticationResponseDto> GetTokenAsync(TokenRequestDto dto)
         {
             var authenticationDto = new AuthenticationResponseDto();
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null)
             {
                 authenticationDto.IsAuthenticated = false;
-                authenticationDto.Message = $"No Accounts Registered with {model.Email}.";
+                authenticationDto.Message = $"Пользователь с Email {dto.Email} не зарегистирован.";
                 return authenticationDto;
             }
 
-            if (await _userManager.CheckPasswordAsync(user, model.Password))
+            if (await _userManager.CheckPasswordAsync(user, dto.Password))
             {
                 authenticationDto.IsAuthenticated = true;
                 var jwtSecurityToken = await CreateJwtToken(user);
@@ -72,11 +79,12 @@ namespace Services
                 authenticationDto.UserName = user.UserName;
                 var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
                 authenticationDto.Roles = rolesList.ToList();
+                _logger.LogError($"Пользователь {user.UserName} вошел в систему");
                 return authenticationDto;
             }
 
             authenticationDto.IsAuthenticated = false;
-            authenticationDto.Message = $"Incorrect Credentials for user {user.Email}.";
+            authenticationDto.Message = $"Неверный пароль для {user.Email}.";
             return authenticationDto;
         }
 
