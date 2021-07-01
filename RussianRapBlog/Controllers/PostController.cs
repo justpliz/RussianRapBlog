@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Models;
-using Services;
+using Services.Interfaces;
 
 namespace RussianRapBlog.Controllers
 {
@@ -56,18 +55,11 @@ namespace RussianRapBlog.Controllers
         /// </summary>
         /// <param name="text">Текст поста</param>
         /// <param name="images">Изображения</param>
-        [HttpPost("{text}")] //TODO Валидация изображений
+        [Authorize(Roles = "User")]
+        [HttpPost("{text}")]
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
-            await using var imageStream = new MemoryStream();
-            var splittedImages = new List<ImageModel>();
-            foreach (var image in images)
-            {
-                await image.CopyToAsync(imageStream);
-                splittedImages.Add(new ImageModel {Data = imageStream.GetBuffer()});
-            }
-
-            await _postService.CreatePostAsync(text, splittedImages);
+            await _postService.CreatePostAsync(text, images);
         }
     }
 }

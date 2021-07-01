@@ -11,7 +11,7 @@ namespace Database
         /// <summary>
         ///     Конструктор
         /// </summary>
-        public RussianRapBlogContext(DbContextOptions<RussianRapBlogContext> options)
+        public RussianRapBlogContext(DbContextOptions<RussianRapBlogContext> options) : base(options)
         {
             Database.Migrate();
         }
@@ -25,14 +25,5 @@ namespace Database
         ///     Изображения
         /// </summary>
         public DbSet<ImageModel> Images { get; set; }
-
-        /// <summary>
-        ///     Конфигурация
-        /// </summary>
-        /// <param name="optionsBuilder">Конструктор опций</param>
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=BlogDb;Trusted_Connection=True");
-        }
     }
 }
