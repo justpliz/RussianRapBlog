@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -32,9 +31,10 @@ namespace RussianRapBlog.Controllers
         /// <param name="id">Идентификатор</param>
         /// <returns>Пост</returns>
         [HttpGet("post/{id}")]
-        public async Task<PostOutDto> GetPostAsync(int id)
+        public async Task<IActionResult> GetPostAsync(int id)
         {
-            return await _postService.GetPostAsync(id);
+            var result = await _postService.GetPostAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace RussianRapBlog.Controllers
         /// <param name="id">Идентификатор</param>
         /// <returns>Изображения</returns>
         [HttpGet("images/{id}")]
-        public async Task<List<FileContentResult>> GetPostImagesAsync(int id)
+        public async Task<List<FileContentResult>> GetPostImagesAsync(int id) //TODO Разобраться. Есть ощущение, что так делать не стоит
         {
             var images = await _postService.GetPostImagesAsync(id);
             var result = images.Select(p => new FileContentResult(p, "image/jpeg")).ToList();

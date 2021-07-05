@@ -32,11 +32,14 @@ namespace Services
         public async Task<PostOutDto> GetPostAsync(int id)
         {
             var post = await _context.Posts.SingleOrDefaultAsync(p => p.Id == id);
-            return new PostOutDto
-            {
-                Text = post.Text,
-                CreationDate = post.CreationDate.ToShortDateString()
-            };
+            if (post!=null)
+                return new PostOutDto
+                {
+                    Text = post.Text,
+                    CreationDate = post.CreationDate.ToShortDateString()
+                };
+
+            return null;
         }
 
         /// <inheritdoc />
