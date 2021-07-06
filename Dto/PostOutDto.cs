@@ -1,4 +1,6 @@
-﻿namespace Dto
+﻿using System.Collections.Generic;
+
+namespace Dto
 {
     /// <summary>
     ///     Dto поста
@@ -14,5 +16,10 @@
         ///     Дата создания поста
         /// </summary>
         public string CreationDate { get; set; }
+
+        /// <summary>
+        ///     Изображения
+        /// </summary>
+        public List<byte[]> Images { get; set; }
     }
 }

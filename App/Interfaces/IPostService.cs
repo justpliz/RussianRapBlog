@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Dto;
 using Microsoft.AspNetCore.Http;
 
@@ -23,12 +22,5 @@ namespace Services.Interfaces
         /// <param name="text"></param>
         /// <returns></returns>
         Task CreatePostAsync(string text, IFormFileCollection images); //TODO возврат поста
-
-        /// <summary>
-        ///     Получить изображения поста
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Список изображений</returns>
-        public Task<List<byte[]>> GetPostImagesAsync(int id);
     }
 }
