@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RussianRapBlog.Extensions;
 
+
 namespace RussianRapBlog
 {
     public class Startup
@@ -40,6 +41,7 @@ namespace RussianRapBlog
             }
 
             app.UseRouting();
+            app.UseExceptionHandlerMiddleware();
             app.UseAuthentication();
             app.UseAuthorization();
 
