@@ -52,7 +52,7 @@ namespace Services
             await _context.SaveChangesAsync();
         }
 
-        private async Task<List<ImageModel>> SplitImages(IFormFileCollection images)
+        private static async Task<List<ImageModel>> SplitImages(IFormFileCollection images)
         {
             await using var imageStream = new MemoryStream();
             var splittedImages = new List<ImageModel>();
