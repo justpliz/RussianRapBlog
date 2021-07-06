@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,9 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using Models;
 using Models.Settings;
+using RussianRapBlog.Extensions;
 using Services;
 using Services.Interfaces;
 
@@ -36,34 +35,7 @@ namespace RussianRapBlog
         {
             services.AddControllers();
             services.AddMvc();
-            services.AddSwaggerGen(c =>
-            {
-                c.AddSecurityDefinition("Bearer",
-                    new OpenApiSecurityScheme
-                    {
-                        Description = "JWT Authorization header using the Bearer scheme.",
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "bearer"
-                    });
-
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Id = "Bearer",
-                                Type = ReferenceType.SecurityScheme
-                            }
-                        },
-                        new List<string>()
-                    }
-                });
-            });
-
-
+            services.AddSwaggerConfigured();
             services.Configure<JWT>(_configuration.GetSection("JWT"));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityDbContext>();
             services.AddDbContext<RussianRapBlogContext>(options =>
