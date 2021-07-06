@@ -50,8 +50,8 @@ namespace Services
             var result = await _userManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
             {
-                var errors = string.Join("/", result.Errors.Select(e => e.ToString()).ToList());
-                throw new BusinessException($"Не удалось создать пользователя {errors}");
+                var errors = string.Join(" ", result.Errors.Select(e => e.Description).ToList());
+                throw new BusinessException($"Не удалось создать пользователя. Ошибки: {errors}");
             }
 
             await _userManager.AddToRoleAsync(user, Roles.User.ToString());
@@ -60,7 +60,8 @@ namespace Services
         }
 
         /// <inheritdoc />
-        public async Task<AuthenticationResponseDto> GetTokenAsync(TokenRequestDto dto)
+        public async Task<AuthenticationResponseDto>
+            GetTokenAsync(TokenRequestDto dto) //TODO Код сп*****ный у индуса. Перепилить
         {
             var authenticationDto = new AuthenticationResponseDto();
             var user = await _userManager.FindByEmailAsync(dto.Email);
