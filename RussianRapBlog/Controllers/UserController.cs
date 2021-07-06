@@ -9,6 +9,7 @@ namespace RussianRapBlog.Controllers
     ///     Контроллер пользователей
     /// </summary>
     [Route("api/[controller]")]
+    [RequireHttps]
     [ApiController]
     public class UserController : ControllerBase
     {
