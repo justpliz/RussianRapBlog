@@ -15,7 +15,7 @@ namespace RussianRapBlog
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", true, true);
+                .AddJsonFile("appsettings.json", false, true);
 
             _configuration = builder.Build();
         }
