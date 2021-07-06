@@ -32,22 +32,16 @@ namespace Services
         /// <inheritdoc />
         public async Task<PostOutDto> GetPostAsync(int id)
         {
-            var post = await _context.Posts.SingleOrDefaultAsync(p => p.Id == id);
-            if (post!=null)
-                return new PostOutDto
-                {
-                    Text = post.Text,
-                    CreationDate = post.CreationDate.ToShortDateString()
-                };
+            var post = await _context.Posts.Include(i => i.Images).SingleOrDefaultAsync(p => p.Id == id);
+            if (post == null)
+                return null;
 
-            return null;
-        }
-
-        /// <inheritdoc />
-        public async Task<List<byte[]>> GetPostImagesAsync(int id)
-        {
-            var post = await _context.Posts.Include(o => o.Images).SingleOrDefaultAsync(p => p.Id == id);
-            return post?.Images.Select(p => p.Data).ToList();
+            return new PostOutDto
+            {
+                Text = post.Text,
+                CreationDate = post.CreationDate.ToShortDateString(),
+                Images = post.Images.Select(i => i.Data).ToList()
+            };
         }
 
         /// <inheritdoc />
