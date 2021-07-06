@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Models.Constants;
+using Models.Exceptions;
 using Models.Settings;
 using Services.Interfaces;
 
@@ -44,13 +45,13 @@ namespace Services
             };
             var userWithSameEmail = await _userManager.FindByEmailAsync(dto.Email);
             if (userWithSameEmail != null)
-                return $"Email {user.Email} занят.";
+                throw new BusinessException($"Почта {dto.Email} занята");
 
             var result = await _userManager.CreateAsync(user, dto.Password);
             if (!result.Succeeded)
             {
                 var errors = string.Join("/", result.Errors.Select(e => e.ToString()).ToList());
-                throw new Exception($"Не удалось создать пользователя {errors}");
+                throw new BusinessException($"Не удалось создать пользователя {errors}");
             }
 
             await _userManager.AddToRoleAsync(user, Roles.User.ToString());
@@ -79,7 +80,7 @@ namespace Services
                 authenticationDto.UserName = user.UserName;
                 var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
                 authenticationDto.Roles = rolesList.ToList();
-                _logger.LogError($"Пользователь {user.UserName} вошел в систему");
+                _logger.LogInformation($"Пользователь {user.UserName} вошел в систему");
                 return authenticationDto;
             }
 

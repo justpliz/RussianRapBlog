@@ -9,6 +9,7 @@ using Dto;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Exceptions;
 using Services.Interfaces;
 
 namespace Services
@@ -67,11 +68,11 @@ namespace Services
                 try
                 {
                     Image.FromStream(imageStream);
-                    splittedImages.Add(new ImageModel {Data = imageStream.GetBuffer()});
+                    splittedImages.Add(new ImageModel {Data = imageStream.GetBuffer(), Name = image.FileName});
                 }
-                catch (ArgumentException e)
+                catch (ArgumentException)
                 {
-                    throw new Exception("Некорректное изображение");
+                    throw new BusinessException($"Некорректное изображение {image.FileName}");
                 }
             }
 

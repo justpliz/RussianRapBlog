@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Models;
 using Models.Settings;
+using RussianRapBlog.Extensions;
 using Services;
 using Services.Interfaces;
 
@@ -111,6 +112,7 @@ namespace RussianRapBlog
             }
 
             app.UseRouting();
+            app.UseExceptionHandlerMiddleware();
             app.UseAuthentication();
             app.UseAuthorization();
 
