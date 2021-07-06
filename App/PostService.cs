@@ -52,7 +52,7 @@ namespace Services
             await _context.SaveChangesAsync();
         }
 
-        private async Task<List<ImageModel>> SplitImages(IFormFileCollection images)
+        private static async Task<List<ImageModel>> SplitImages(IFormFileCollection images)
         {
             await using var imageStream = new MemoryStream();
             var splittedImages = new List<ImageModel>();
@@ -62,7 +62,8 @@ namespace Services
                 try
                 {
                     Image.FromStream(imageStream);
-                    splittedImages.Add(new ImageModel {Data = imageStream.GetBuffer(), Name = image.FileName});
+                    splittedImages.Add(new ImageModel
+                        {Data = imageStream.GetBuffer(), Name = image.FileName.Split("\\").LastOrDefault()}); //TODO Подумать, выглядит как всратый костыль
                 }
                 catch (ArgumentException)
                 {
