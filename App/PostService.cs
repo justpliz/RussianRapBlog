@@ -62,7 +62,8 @@ namespace Services
                 try
                 {
                     Image.FromStream(imageStream);
-                    splittedImages.Add(new ImageModel {Data = imageStream.GetBuffer(), Name = image.FileName});
+                    splittedImages.Add(new ImageModel
+                        {Data = imageStream.GetBuffer(), Name = image.FileName.Split("\\").LastOrDefault()}); //TODO Подумать, выглядит как всратый костыль
                 }
                 catch (ArgumentException)
                 {
