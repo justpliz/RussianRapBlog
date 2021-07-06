@@ -7,7 +7,7 @@ namespace RussianRapBlog.Extensions
     /// <summary>
     ///     Расширения для подключения Swagger
     /// </summary>
-    public static class SwaggerExtensions
+    public static class SwaggerExtension
     {
         public static void AddSwaggerConfigured(this IServiceCollection services)
         {

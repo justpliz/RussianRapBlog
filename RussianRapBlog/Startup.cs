@@ -1,20 +1,9 @@
-using System;
-using System.Text;
-using Database;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
-using Models;
-using Models.Settings;
 using RussianRapBlog.Extensions;
-using Services;
-using Services.Interfaces;
 
 namespace RussianRapBlog
 {
@@ -31,46 +20,14 @@ namespace RussianRapBlog
             _configuration = builder.Build();
         }
 
-        public void ConfigureServices(IServiceCollection services) //TODO Вынести инициализации
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddMvc();
             services.AddSwaggerConfigured();
-            services.Configure<JWT>(_configuration.GetSection("JWT"));
-            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityDbContext>();
-            services.AddDbContext<RussianRapBlogContext>(options =>
-                options.UseSqlServer(
-                    _configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(RussianRapBlogContext).Assembly.FullName)));
-            services.AddDbContext<IdentityDbContext>(options =>
-                options.UseSqlServer(
-                    _configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(IdentityDbContext).Assembly.FullName)));
-
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(o =>
-                {
-                    o.RequireHttpsMetadata = false;
-                    o.SaveToken = false;
-                    o.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero,
-                        ValidIssuer = _configuration["JWT:Issuer"],
-                        ValidAudience = _configuration["JWT:Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]))
-                    };
-                });
-
-            services.AddScoped<IPostService, PostService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddDatabase(_configuration);
+            services.AddAuthenticationConfigured(_configuration);
+            services.AddServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
