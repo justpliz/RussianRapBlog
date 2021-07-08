@@ -28,14 +28,14 @@ namespace RussianRapBlog.Controllers
         [HttpPost("register")] //TODO Валидация данных
         public async Task<ActionResult> RegisterAsync(RegisterDto dto)
         {
-            var result = await _userService.RegisterAsync(dto);
+            var result = await _userService.RegisterAsync(dto).ConfigureAwait(false);
             return Ok(result);
         }
 
         [HttpPost("token")]
         public async Task<IActionResult> GetTokenAsync(TokenRequestDto dto)
         {
-            var result = await _userService.GetTokenAsync(dto);
+            var result = await _userService.GetTokenAsync(dto).ConfigureAwait(false);
             return Ok(result);
         }
     }

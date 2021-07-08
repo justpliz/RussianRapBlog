@@ -47,14 +47,14 @@ namespace Services
             if (userWithSameEmail != null)
                 throw new BusinessException($"Почта {dto.Email} занята");
 
-            var result = await _userManager.CreateAsync(user, dto.Password);
+            var result = await _userManager.CreateAsync(user, dto.Password).ConfigureAwait(false);
             if (!result.Succeeded)
             {
                 var errors = string.Join(" ", result.Errors.Select(e => e.Description).ToList());
                 throw new BusinessException($"Не удалось создать пользователя. Ошибки: {errors}");
             }
 
-            await _userManager.AddToRoleAsync(user, Roles.User.ToString());
+            await _userManager.AddToRoleAsync(user, Roles.User.ToString()).ConfigureAwait(false);
             _logger.LogInformation($"Пользователь {user.UserName} зарегистрирован");
             return $"Пользователь {user.UserName} зарегистрирован";
         }
@@ -64,7 +64,7 @@ namespace Services
             GetTokenAsync(TokenRequestDto dto) //TODO Код сп*****ный у индуса. Перепилить
         {
             var authenticationDto = new AuthenticationResponseDto();
-            var user = await _userManager.FindByEmailAsync(dto.Email);
+            var user = await _userManager.FindByEmailAsync(dto.Email).ConfigureAwait(false);
             if (user == null)
             {
                 authenticationDto.IsAuthenticated = false;
@@ -92,8 +92,8 @@ namespace Services
 
         private async Task<JwtSecurityToken> CreateJwtToken(User user)
         {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var roles = await _userManager.GetRolesAsync(user);
+            var userClaims = await _userManager.GetClaimsAsync(user).ConfigureAwait(false);
+            var roles = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
             var roleClaims = roles.Select(t => new Claim("roles", t)).ToList();
             var claims = new[]
                 {

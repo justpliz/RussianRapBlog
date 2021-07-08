@@ -30,8 +30,8 @@ namespace RussianRapBlog
                 var services = scope.ServiceProvider;
                 var userManager = services.GetRequiredService<UserManager<User>>();
                 var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                await IdentityDbContextSeed.SeedEssentialsAsync(userManager, roleManager);
-                await host.RunAsync();
+                await IdentityDbContextSeed.SeedEssentialsAsync(userManager, roleManager).ConfigureAwait(false);
+                await host.RunAsync().ConfigureAwait(false);
             }
             catch (InvalidOperationException e)
             {
