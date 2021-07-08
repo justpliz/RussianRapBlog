@@ -31,7 +31,7 @@ namespace RussianRapBlog.Controllers
         [HttpGet("post/{id}")]
         public async Task<IActionResult> GetPostAsync(int id)
         {
-            var result = await _postService.GetPostAsync(id);
+            var result = await _postService.GetPostAsync(id).ConfigureAwait(false);
             return result == null ? NotFound() : Ok(result);
         }
 
@@ -44,7 +44,7 @@ namespace RussianRapBlog.Controllers
         [HttpPost("{text}")]
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
-            await _postService.CreatePostAsync(text, images);
+            await _postService.CreatePostAsync(text, images).ConfigureAwait(false);
         }
     }
 }

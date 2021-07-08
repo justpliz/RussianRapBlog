@@ -13,9 +13,9 @@ namespace Database
         public static async Task SeedEssentialsAsync(UserManager<User> userManager,
             RoleManager<IdentityRole> roleManager)
         {
-            await roleManager.CreateAsync(new IdentityRole(Roles.Administrator.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.Moderator.ToString()));
-            await roleManager.CreateAsync(new IdentityRole(Roles.User.ToString()));
+            await roleManager.CreateAsync(new IdentityRole(Roles.Administrator.ToString())).ConfigureAwait(false);
+            await roleManager.CreateAsync(new IdentityRole(Roles.Moderator.ToString())).ConfigureAwait(false);
+            await roleManager.CreateAsync(new IdentityRole(Roles.User.ToString())).ConfigureAwait(false);
         }
     }
 }

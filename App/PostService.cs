@@ -48,8 +48,8 @@ namespace Services
         public async Task CreatePostAsync(string text, IFormFileCollection images) //TODO возврат поста
         {
             await _context.Posts.AddAsync(new Post
-                {Text = text, CreationDate = DateTime.Now, Images = await SplitImages(images)});
-            await _context.SaveChangesAsync();
+                {Text = text, CreationDate = DateTime.Now, Images = await SplitImages(images)}).ConfigureAwait(false);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
         private static async Task<List<ImageModel>> SplitImages(IFormFileCollection images)
@@ -58,12 +58,14 @@ namespace Services
             var splittedImages = new List<ImageModel>();
             foreach (var image in images)
             {
-                await image.CopyToAsync(imageStream);
+                await image.CopyToAsync(imageStream).ConfigureAwait(false);
                 try
                 {
                     Image.FromStream(imageStream);
                     splittedImages.Add(new ImageModel
-                        {Data = imageStream.GetBuffer(), Name = image.FileName.Split("\\").LastOrDefault()}); //TODO Подумать, выглядит как всратый костыль
+                    {
+                        Data = imageStream.GetBuffer(), Name = image.FileName.Split("\\").LastOrDefault()
+                    }); //TODO Подумать, выглядит как всратый костыль
                 }
                 catch (ArgumentException)
                 {
