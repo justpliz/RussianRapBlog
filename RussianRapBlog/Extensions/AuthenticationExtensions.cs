@@ -11,7 +11,7 @@ namespace RussianRapBlog.Extensions
     /// <summary>
     ///     Расширение для конфигурации авторизации
     /// </summary>
-    public static class AuthenticationExtension
+    public static class AuthenticationExtensions
     {
         public static void AddAuthenticationConfigured(this IServiceCollection services,
             IConfigurationRoot configuration)

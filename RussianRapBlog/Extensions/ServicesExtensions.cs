@@ -7,7 +7,7 @@ namespace RussianRapBlog.Extensions
     /// <summary>
     ///     Расширение для подключения сервисов
     /// </summary>
-    public static class ServicesExtension
+    public static class ServicesExtensions
     {
         public static void AddServices(this IServiceCollection services)
         {

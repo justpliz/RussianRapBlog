@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RussianRapBlog.Extensions;
 
-
 namespace RussianRapBlog
 {
     public class Startup
@@ -28,6 +27,7 @@ namespace RussianRapBlog
             services.AddSwaggerConfigured();
             services.AddDatabase(_configuration);
             services.AddAuthenticationConfigured(_configuration);
+            services.AddIdentityConfigured();
             services.AddServices();
         }
 
