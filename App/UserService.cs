@@ -45,13 +45,13 @@ namespace Services
             };
             var userWithSameEmail = await _userManager.FindByEmailAsync(dto.Email);
             if (userWithSameEmail != null)
-                throw new BusinessException($"Почта {dto.Email} занята");
+                return $"Почта {dto.Email} занята";
 
             var result = await _userManager.CreateAsync(user, dto.Password).ConfigureAwait(false);
             if (!result.Succeeded)
             {
                 var errors = string.Join(" ", result.Errors.Select(e => e.Description).ToList());
-                throw new BusinessException($"Не удалось создать пользователя. Ошибки: {errors}");
+                return $"Не удалось создать пользователя. Ошибки: {errors}";
             }
 
             await _userManager.AddToRoleAsync(user, Roles.User.ToString()).ConfigureAwait(false);
