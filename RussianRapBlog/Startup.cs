@@ -22,12 +22,12 @@ namespace RussianRapBlog
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentityConfigured();
             services.AddControllers();
             services.AddMvc();
             services.AddSwaggerConfigured();
             services.AddDatabase(_configuration);
             services.AddAuthenticationConfigured(_configuration);
-            services.AddIdentityConfigured();
             services.AddServices();
         }
 
