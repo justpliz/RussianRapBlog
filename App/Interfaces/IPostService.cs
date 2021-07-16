@@ -20,7 +20,8 @@ namespace Services.Interfaces
         ///     Создать новый пост
         /// </summary>
         /// <param name="text"></param>
+        /// <param name="userId"></param>
         /// <returns></returns>
-        Task CreatePostAsync(string text, IFormFileCollection images); //TODO возврат поста
+        Task CreatePostAsync(string text, IFormFileCollection images, string userId); //TODO возврат поста
     }
 }

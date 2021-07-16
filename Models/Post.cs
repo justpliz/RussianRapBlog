@@ -32,5 +32,10 @@ namespace Models
 
         /// <Inheritdoc />
         public int Id { get; set; }
+
+        /// <summary>
+        ///     Id Автора
+        /// </summary>
+        public string UserId { get; set; }
     }
 }

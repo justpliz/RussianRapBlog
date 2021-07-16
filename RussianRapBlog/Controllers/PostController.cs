@@ -1,7 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+using Models;
+
 using Services.Interfaces;
 
 namespace RussianRapBlog.Controllers
@@ -17,9 +21,11 @@ namespace RussianRapBlog.Controllers
         ///     Сервис постов
         /// </summary>
         private readonly IPostService _postService;
+        private readonly UserManager<User> _userManager;
 
-        public PostController(IPostService postService)
+        public PostController(IPostService postService, UserManager<User> userManager)
         {
+            _userManager = userManager;
             _postService = postService;
         }
 
@@ -44,7 +50,8 @@ namespace RussianRapBlog.Controllers
         [HttpPost("{text}")]
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
-            await _postService.CreatePostAsync(text, images).ConfigureAwait(false);
+            var userId = _userManager.GetUserId(User);
+            await _postService.CreatePostAsync(text, images, userId).ConfigureAwait(false);
         }
     }
 }

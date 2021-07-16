@@ -45,10 +45,16 @@ namespace Services
         }
 
         /// <inheritdoc />
-        public async Task CreatePostAsync(string text, IFormFileCollection images) //TODO возврат поста
+        public async Task CreatePostAsync(string text, IFormFileCollection images, string userId) //TODO возврат поста
         {
             await _context.Posts.AddAsync(new Post
-                {Text = text, CreationDate = DateTime.Now, Images = await SplitImages(images)}).ConfigureAwait(false);
+            {
+                Text = text,
+                CreationDate = DateTime.Now,
+                Images = await SplitImages(images).ConfigureAwait(false),
+                UserId = userId
+            });
+
             await _context.SaveChangesAsync().ConfigureAwait(false);
         }
 
