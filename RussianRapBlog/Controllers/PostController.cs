@@ -50,8 +50,24 @@ namespace RussianRapBlog.Controllers
         [HttpPost("{text}")]
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
-            var userId = _userManager.GetUserId(User);
-            await _postService.CreatePostAsync(text, images, userId).ConfigureAwait(false);
+            var user = await _userManager.GetUserAsync(User);
+            await _postService.CreatePostAsync(text, images, user).ConfigureAwait(false);
+        }
+
+        [Authorize(Roles ="User")]
+        [HttpPost]
+        public async Task<long> UpVoteAsync(int postId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _postService.UpVoteAsync(postId, user).ConfigureAwait(false);
+        }
+
+        [Authorize(Roles ="User")]
+        [HttpPost]
+        public async Task<long> DownVoteAsync(int postId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            return await _postService.DownVoteAsync(postId, user).ConfigureAwait(false);
         }
     }
 }

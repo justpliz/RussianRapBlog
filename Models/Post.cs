@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
+using Models.Constants;
 using Models.Interfaces;
 
 namespace Models
@@ -13,6 +15,7 @@ namespace Models
         public Post()
         {
             Images = new Collection<ImageModel>();
+            Voters = new Collection<Voter>();
         }
 
         /// <summary>
@@ -34,8 +37,18 @@ namespace Models
         public int Id { get; set; }
 
         /// <summary>
-        ///     Id Автора
+        ///     Автор
         /// </summary>
-        public string UserId { get; set; }
+        public User Author { get; set; }
+
+        /// <summary>
+        /// Рейтинг поста
+        /// </summary>
+        public int Rating { get; set; }
+
+        /// <summary>
+        /// Оценившие пост
+        /// </summary>
+        public ICollection<Voter> Voters { get; set; }    
     }
 }
