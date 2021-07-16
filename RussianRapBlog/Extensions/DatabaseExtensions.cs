@@ -13,12 +13,12 @@ namespace RussianRapBlog.Extensions
         public static void AddDatabase(this IServiceCollection services, IConfigurationRoot configuration)
         {
             services.AddDbContext<RussianRapBlogContext>(options =>
-                options.UseSqlServer(
+                options.UseNpgsql(
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(RussianRapBlogContext).Assembly.FullName)));
             services.AddDbContext<IdentityDbContext>(options =>
-                options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
+                options.UseNpgsql(
+                    configuration.GetConnectionString("IdentityConnection"),
                     b => b.MigrationsAssembly(typeof(IdentityDbContext).Assembly.FullName)));
         }
     }
