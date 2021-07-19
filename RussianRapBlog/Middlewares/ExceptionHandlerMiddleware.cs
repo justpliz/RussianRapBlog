@@ -36,6 +36,13 @@ namespace RussianRapBlog.Middlewares
                     .ConfigureAwait(false);
             }
 
+            catch (NotFoundException ex)
+            {
+                _logger.LogError(ex.Message);
+                await HandleExceptionMessageAsync(context, ex.Message, HttpStatusCode.NotFound)
+                    .ConfigureAwait(false);
+            }
+
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
