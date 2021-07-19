@@ -32,6 +32,11 @@ namespace RussianRapBlog.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// Получить токен авторизации
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost("token")]
         public async Task<IActionResult> GetTokenAsync(TokenRequestDto dto)
         {

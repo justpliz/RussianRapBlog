@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Database
@@ -6,7 +7,7 @@ namespace Database
     /// <summary>
     ///     Контекст приложения
     /// </summary>
-    public class RussianRapBlogContext : DbContext
+    public class RussianRapBlogContext : IdentityDbContext<User>
     {
         /// <summary>
         ///     Конструктор

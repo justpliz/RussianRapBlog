@@ -50,27 +50,38 @@ namespace RussianRapBlog.Controllers
         /// <param name="images">Изображения</param>
         [Authorize(Roles = "User")]
         [HttpPost("{text}")]
-        public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
+        public async Task<IActionResult> CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
             var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _postService.CreatePostAsync(text, images, user).ConfigureAwait(false);
-        }
+            var result = await _postService.CreatePostAsync(text, images, user).ConfigureAwait(false);
+            return result == null ? NotFound() : Ok(result);        }
 
+        /// <summary>
+        /// Лайкнуть пост
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [Authorize(Roles ="User")]
         [HttpPut("upvote")]
-        public async Task<long> UpVoteAsync(int postId)
+        public async Task<IActionResult> UpVoteAsync(int postId)
         {
             var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            
-            return await _postService.VoteAsync(postId, user,Vote.Up).ConfigureAwait(false);
+            var result = await _postService.VoteAsync(postId, user, Vote.Up).ConfigureAwait(false);
+            return result == null ? NotFound() : Ok(result);
         }
 
+        /// <summary>
+        /// Дизлайкнуть пост
+        /// </summary>
+        /// <param name="postId"></param>
+        /// <returns></returns>
         [Authorize(Roles ="User")]
         [HttpPut("downvote")]
-        public async Task<long> DownVoteAsync(int postId)
+        public async Task<IActionResult> DownVoteAsync(int postId)
         {
             var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            return await _postService.VoteAsync(postId, user, Vote.Down).ConfigureAwait(false);
+            var result = await _postService.VoteAsync(postId, user, Vote.Down).ConfigureAwait(false);
+            return result == null ? NotFound() : Ok(result);
         }
     }
 }

@@ -24,18 +24,16 @@ namespace Services
         ///     Контекст
         /// </summary>
         private readonly RussianRapBlogContext _blogContext;
-        private readonly IdentityDbContext _identityContext;
 
-        public PostService(RussianRapBlogContext blogContext, IdentityDbContext identityContext)
+        public PostService(RussianRapBlogContext blogContext)
         {
             _blogContext = blogContext;
-            _identityContext = identityContext;
         }
 
         /// <inheritdoc />
         public async Task<PostOutDto> GetPostAsync(int id)
         {
-            var post = await _blogContext.Posts.Include(i => i.Images).SingleOrDefaultAsync(p => p.Id == id);
+            var post = await _blogContext.Posts.Include(i => i.Images).Include(p=>p.Author).SingleOrDefaultAsync(p => p.Id == id);
             if (post == null)
                 return null;
 
@@ -44,26 +42,38 @@ namespace Services
                 Text = post.Text,
                 CreationDate = post.CreationDate.ToShortDateString(),
                 Images = post.Images.Select(i => i.Data).ToList(),
-                Rating = post.Rating
+                Rating = post.Rating,
+                Author = post?.Author.UserName
             };
         }
 
         /// <inheritdoc />
-        public async Task CreatePostAsync(string text, IFormFileCollection images, User user) //TODO возврат поста
+        public async Task<PostOutDto> CreatePostAsync(string text, IFormFileCollection images, User user) //TODO возврат поста
         {
-            await _blogContext.Posts.AddAsync(new Post
+            var author = await _blogContext.Users.SingleOrDefaultAsync(p => p.UserName == user.UserName);
+            var post = new Post
             {
                 Text = text,
                 CreationDate = DateTime.Now,
                 Images = await SplitImages(images).ConfigureAwait(false),
-                Author = identityUser
-            });
+                Author = author
+            };
+            await _blogContext.Posts.AddAsync(post);
 
             await _blogContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return new PostOutDto //TODO написать мапперы для исключения повторов
+            {
+                Text = post.Text,
+                CreationDate = post.CreationDate.ToShortDateString(),
+                Images = post.Images.Select(i => i.Data).ToList(),
+                Rating = post.Rating,
+                Author = author.UserName
+            };
         }
 
         /// <inheritdoc />
-        public async Task<long> VoteAsync(int postId, User user,Vote vote)
+        public async Task<string> VoteAsync(int postId, User user,Vote vote)
         {
             var post = await _blogContext.Posts.Include(p => p.Voters.Where(u => u.User == user)).FirstOrDefaultAsync(i=>i.Id == postId);
             if (post == null)
@@ -71,7 +81,7 @@ namespace Services
 
             var voter = post.Voters.FirstOrDefault();
             if (voter?.Vote == vote)
-                return post.Rating;
+                return "Вы уже так проголосовали";
 
             if (voter == null)
             {
@@ -85,16 +95,15 @@ namespace Services
             else
             {
                 if (vote == Vote.Up)
-                    post.Rating -= 2;
-                else
                     post.Rating += 2;
+                else
+                    post.Rating -= 2;
 
-                post.Voters.Remove(voter);
-                post.Voters.Add(new Voter() { User = user, Vote = Vote.Up });
+                voter.Vote = vote;
             }
 
           await _blogContext.SaveChangesAsync().ConfigureAwait(false);
-          return post.Rating;
+          return post.Rating.ToString();
         }
 
         private static async Task<List<ImageModel>> SplitImages(IFormFileCollection images)

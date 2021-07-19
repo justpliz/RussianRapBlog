@@ -25,7 +25,7 @@ namespace Services.Interfaces
         /// <param name="text"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task CreatePostAsync(string text, IFormFileCollection images, User user); //TODO возврат поста
+        Task<PostOutDto> CreatePostAsync(string text, IFormFileCollection images, User user); //TODO возврат поста
 
         /// <summary>
         /// Поставить оценку посту
@@ -33,6 +33,6 @@ namespace Services.Interfaces
         /// <param name="postId"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<long> VoteAsync(int postId, User user, Vote vote);
+        Task<string> VoteAsync(int postId, User user, Vote vote);
     }
 }

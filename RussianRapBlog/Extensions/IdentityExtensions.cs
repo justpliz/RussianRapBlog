@@ -12,7 +12,7 @@ namespace RussianRapBlog.Extensions
     {
         public static void AddIdentityConfigured(this IServiceCollection services)
         {
-            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityDbContext>();
+            services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<RussianRapBlogContext>();
         }
     }
 }

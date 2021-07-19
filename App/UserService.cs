@@ -11,7 +11,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Models.Constants;
-using Models.Exceptions;
 using Models.Settings;
 using Services.Interfaces;
 
@@ -81,6 +80,7 @@ namespace Services
                 authenticationDto.UserName = user.UserName;
                 var rolesList = await _userManager.GetRolesAsync(user).ConfigureAwait(false);
                 authenticationDto.Roles = rolesList.ToList();
+                authenticationDto.Message = "Успешно";
                 _logger.LogInformation($"Пользователь {user.UserName} вошел в систему");
                 return authenticationDto;
             }
