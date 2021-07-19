@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using Models;
+using Models.Constants;
 
 using Services.Interfaces;
 
@@ -50,24 +52,25 @@ namespace RussianRapBlog.Controllers
         [HttpPost("{text}")]
         public async Task CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             await _postService.CreatePostAsync(text, images, user).ConfigureAwait(false);
         }
 
         [Authorize(Roles ="User")]
-        [HttpPost]
+        [HttpPut("upvote")]
         public async Task<long> UpVoteAsync(int postId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            return await _postService.UpVoteAsync(postId, user).ConfigureAwait(false);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            
+            return await _postService.VoteAsync(postId, user,Vote.Up).ConfigureAwait(false);
         }
 
         [Authorize(Roles ="User")]
-        [HttpPost]
+        [HttpPut("downvote")]
         public async Task<long> DownVoteAsync(int postId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            return await _postService.DownVoteAsync(postId, user).ConfigureAwait(false);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            return await _postService.VoteAsync(postId, user, Vote.Down).ConfigureAwait(false);
         }
     }
 }

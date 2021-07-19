@@ -23,17 +23,19 @@ namespace Services
         /// <summary>
         ///     Контекст
         /// </summary>
-        private readonly RussianRapBlogContext _context;
+        private readonly RussianRapBlogContext _blogContext;
+        private readonly IdentityDbContext _identityContext;
 
-        public PostService(RussianRapBlogContext context)
+        public PostService(RussianRapBlogContext blogContext, IdentityDbContext identityContext)
         {
-            _context = context;
+            _blogContext = blogContext;
+            _identityContext = identityContext;
         }
 
         /// <inheritdoc />
         public async Task<PostOutDto> GetPostAsync(int id)
         {
-            var post = await _context.Posts.Include(i => i.Images).SingleOrDefaultAsync(p => p.Id == id);
+            var post = await _blogContext.Posts.Include(i => i.Images).SingleOrDefaultAsync(p => p.Id == id);
             if (post == null)
                 return null;
 
@@ -49,68 +51,50 @@ namespace Services
         /// <inheritdoc />
         public async Task CreatePostAsync(string text, IFormFileCollection images, User user) //TODO возврат поста
         {
-            await _context.Posts.AddAsync(new Post
+            await _blogContext.Posts.AddAsync(new Post
             {
                 Text = text,
                 CreationDate = DateTime.Now,
                 Images = await SplitImages(images).ConfigureAwait(false),
-                Author = user
+                Author = identityUser
             });
 
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            await _blogContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public async Task<long> UpVoteAsync(int postId, User user) //TODO отрефакторить повтор кода
+        public async Task<long> VoteAsync(int postId, User user,Vote vote)
         {
-            var post = await _context.Posts.Include(p => p.Voters.Where(u => u.User == user)).FirstOrDefaultAsync(i=>i.Id == postId);
+            var post = await _blogContext.Posts.Include(p => p.Voters.Where(u => u.User == user)).FirstOrDefaultAsync(i=>i.Id == postId);
             if (post == null)
                 throw new NotFoundException($"Пост с id {postId} не найден");
 
-            var voter = post.Voters.First();
-            if (voter?.Vote == Vote.Up)
+            var voter = post.Voters.FirstOrDefault();
+            if (voter?.Vote == vote)
                 return post.Rating;
 
             if (voter == null)
             {
-                post.Rating++;
-                post.Voters.Add(new Voter() { User = user, Vote = Vote.Up });
+                if (vote == Vote.Up)
+                    post.Rating++;
+                else
+                    post.Rating--;
+
+                post.Voters.Add(new Voter() { User = user, Vote = vote });
             }
             else
             {
-                post.Rating += 2;
+                if (vote == Vote.Up)
+                    post.Rating -= 2;
+                else
+                    post.Rating += 2;
+
                 post.Voters.Remove(voter);
                 post.Voters.Add(new Voter() { User = user, Vote = Vote.Up });
             }
 
-          await _context.SaveChangesAsync().ConfigureAwait(false);
-            return post.Rating;
-        }
-
-        /// <inheritdoc />
-        public async Task<long> DownVoteAsync(int postId, User user)
-        {
-            var post = await _context.Posts.Include(p => p.Voters.Where(u => u.User == user)).FirstOrDefaultAsync(i => i.Id == postId);
-            if (post == null)
-                throw new NotFoundException($"Пост с id {postId} не найден");
-
-            var voter = post.Voters.First();
-            if (voter?.Vote == Vote.Down)
-                return post.Rating;
-
-            if (voter == null)
-            {
-                post.Rating--;
-                post.Voters.Add(new Voter() { User = user, Vote = Vote.Down });
-            }
-            else
-            {
-                post.Rating -= 2;
-                post.Voters.Remove(voter);
-                post.Voters.Add(new Voter() { User = user, Vote = Vote.Down });
-            }
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return post.Rating;
+          await _blogContext.SaveChangesAsync().ConfigureAwait(false);
+          return post.Rating;
         }
 
         private static async Task<List<ImageModel>> SplitImages(IFormFileCollection images)

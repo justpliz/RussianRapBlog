@@ -3,6 +3,7 @@ using Dto;
 using Microsoft.AspNetCore.Http;
 
 using Models;
+using Models.Constants;
 
 namespace Services.Interfaces
 {
@@ -27,19 +28,11 @@ namespace Services.Interfaces
         Task CreatePostAsync(string text, IFormFileCollection images, User user); //TODO возврат поста
 
         /// <summary>
-        /// Лайкнуть пост
+        /// Поставить оценку посту
         /// </summary>
         /// <param name="postId"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<long> UpVoteAsync(int postId, User user);
-
-        /// <summary>
-        /// Дизлайкнуть пост
-        /// </summary>
-        /// <param name="postId"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        Task<long> DownVoteAsync(int postId, User user);
+        Task<long> VoteAsync(int postId, User user, Vote vote);
     }
 }
