@@ -4,13 +4,18 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+
+using Database;
+
 using Dto;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models;
 using Models.Constants;
+using Models.Exceptions;
 using Models.Settings;
 using Services.Interfaces;
 
@@ -23,14 +28,16 @@ namespace Services
         private readonly ILogger<UserService> _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
+        private readonly RussianRapBlogContext _context;
 
         public UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
-            IOptions<JWT> jwt, ILogger<UserService> logger)
+            IOptions<JWT> jwt, ILogger<UserService> logger, RussianRapBlogContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _jwt = jwt.Value;
             _logger = logger;
+            _context = context;
         }
 
         /// <inheritdoc />
@@ -113,6 +120,31 @@ namespace Services
                 expires: DateTime.UtcNow.AddMinutes(_jwt.DurationInMinutes),
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
+        }
+
+        /// <inheritdoc/>
+        public async Task<UserOutDto> GetUserAsync(string userName)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(p=>p.UserName.ToLower().IndexOf(userName.Trim().ToLower())>=0);
+            if (user == null)
+                throw new NotFoundException($"Пользователь с именем {userName} не найден");
+
+            var rating = await UpdateUserRating(user);
+
+            return new UserOutDto
+            {
+                UserName = user.UserName,
+                Description = user.Description,
+                Rating = rating
+            };
+        }
+
+        private async Task<int> UpdateUserRating(User user)
+        {
+            var rating = await _context.Posts.Where(p => p.Author == user).SumAsync(r=>r.Rating);
+            user.Rating = rating;
+            await _context.SaveChangesAsync();
+            return rating;
         }
     }
 }
