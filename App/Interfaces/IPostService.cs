@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Dto;
 using Microsoft.AspNetCore.Http;
-
 using Models;
 using Models.Constants;
 
@@ -28,7 +27,7 @@ namespace Services.Interfaces
         Task<PostOutDto> CreatePostAsync(string text, IFormFileCollection images, User user); //TODO возврат поста
 
         /// <summary>
-        /// Поставить оценку посту
+        ///     Поставить оценку посту
         /// </summary>
         /// <param name="postId"></param>
         /// <param name="user"></param>
@@ -36,11 +35,11 @@ namespace Services.Interfaces
         Task<string> VoteAsync(int postId, User user, Vote vote);
 
         /// <summary>
-        /// Удалить пост
+        ///     Удалить пост
         /// </summary>
         /// <param name=""></param>
         /// <param name=""></param>
         /// <returns></returns>
-        Task<string> RemovePostAsync(int postId,User user);
+        Task<string> RemovePostAsync(int postId, User user);
     }
 }

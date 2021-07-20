@@ -8,12 +8,12 @@ namespace Models
     public class User : IdentityUser
     {
         /// <summary>
-        /// Описание пользователя
+        ///     Описание пользователя
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// Рейтинг пользователя
+        ///     Рейтинг пользователя
         /// </summary>
         public int Rating { get; set; }
     }

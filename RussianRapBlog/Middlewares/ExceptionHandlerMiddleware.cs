@@ -12,8 +12,8 @@ namespace RussianRapBlog.Middlewares
     /// </summary>
     public class ExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlerMiddleware> _logger;
+        private readonly RequestDelegate _next;
 
 
         public ExceptionHandlerMiddleware(RequestDelegate next, ILogger<ExceptionHandlerMiddleware> logger)

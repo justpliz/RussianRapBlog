@@ -23,7 +23,7 @@ namespace Services.Interfaces
         Task<AuthenticationResponseDto> GetTokenAsync(TokenRequestDto dto);
 
         /// <summary>
-        /// Получить пользователя по имени
+        ///     Получить пользователя по имени
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>

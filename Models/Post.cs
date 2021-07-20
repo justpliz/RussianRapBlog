@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-using Models.Constants;
 using Models.Interfaces;
 
 namespace Models
@@ -33,22 +31,22 @@ namespace Models
         /// </summary>
         public ICollection<ImageModel> Images { get; set; }
 
-        /// <Inheritdoc />
-        public int Id { get; set; }
-
         /// <summary>
         ///     Автор
         /// </summary>
         public User Author { get; set; }
 
         /// <summary>
-        /// Рейтинг поста
+        ///     Рейтинг поста
         /// </summary>
         public int Rating { get; set; }
 
         /// <summary>
-        /// Оценившие пост
+        ///     Оценившие пост
         /// </summary>
-        public ICollection<Voter> Voters { get; set; }    
+        public ICollection<Voter> Voters { get; set; }
+
+        /// <Inheritdoc />
+        public int Id { get; set; }
     }
 }

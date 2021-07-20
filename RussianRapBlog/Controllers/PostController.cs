@@ -4,10 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
 using Models;
 using Models.Constants;
-
 using Services.Interfaces;
 
 namespace RussianRapBlog.Controllers
@@ -23,6 +21,7 @@ namespace RussianRapBlog.Controllers
         ///     Сервис постов
         /// </summary>
         private readonly IPostService _postService;
+
         private readonly UserManager<User> _userManager;
 
         public PostController(IPostService postService, UserManager<User> userManager)
@@ -52,34 +51,38 @@ namespace RussianRapBlog.Controllers
         [HttpPost("{text}")]
         public async Task<IActionResult> CreatePostAsync(string text, [FromForm] IFormFileCollection images)
         {
-            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).ConfigureAwait(false);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                .ConfigureAwait(false);
             var result = await _postService.CreatePostAsync(text, images, user).ConfigureAwait(false);
-            return result == null ? NotFound() : Ok(result);        }
+            return result == null ? NotFound() : Ok(result);
+        }
 
         /// <summary>
-        /// Лайкнуть пост
+        ///     Лайкнуть пост
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        [Authorize(Roles ="User")]
+        [Authorize(Roles = "User")]
         [HttpPut("upvote")]
         public async Task<IActionResult> UpVoteAsync(int postId)
         {
-            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).ConfigureAwait(false);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                .ConfigureAwait(false);
             var result = await _postService.VoteAsync(postId, user, Vote.Up).ConfigureAwait(false);
             return result == null ? NotFound() : Ok(result);
         }
 
         /// <summary>
-        /// Дизлайкнуть пост
+        ///     Дизлайкнуть пост
         /// </summary>
         /// <param name="postId"></param>
         /// <returns></returns>
-        [Authorize(Roles ="User")]
+        [Authorize(Roles = "User")]
         [HttpPut("downvote")]
         public async Task<IActionResult> DownVoteAsync(int postId)
         {
-            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).ConfigureAwait(false);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                .ConfigureAwait(false);
             var result = await _postService.VoteAsync(postId, user, Vote.Down).ConfigureAwait(false);
             return result == null ? NotFound() : Ok(result);
         }
@@ -88,7 +91,8 @@ namespace RussianRapBlog.Controllers
         [HttpDelete("remove")]
         public async Task<IActionResult> RemovePostAsync(int postId)
         {
-           var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value).ConfigureAwait(false);
+            var user = await _userManager.FindByNameAsync(User.FindFirst(ClaimTypes.NameIdentifier).Value)
+                .ConfigureAwait(false);
             var result = await _postService.RemovePostAsync(postId, user).ConfigureAwait(false);
             return result == null ? NotFound() : Ok(result);
         }

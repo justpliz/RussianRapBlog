@@ -1,7 +1,7 @@
 ﻿namespace Models.Constants
 {
     /// <summary>
-    /// Оценка поста или коммента
+    ///     Оценка поста или коммента
     /// </summary>
     public enum Vote
     {

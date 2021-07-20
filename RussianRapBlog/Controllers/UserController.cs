@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Dto;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
@@ -35,7 +34,7 @@ namespace RussianRapBlog.Controllers
         }
 
         /// <summary>
-        /// Получить токен авторизации
+        ///     Получить токен авторизации
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
@@ -47,7 +46,7 @@ namespace RussianRapBlog.Controllers
         }
 
         /// <summary>
-        /// Получить данные о пользователе
+        ///     Получить данные о пользователе
         /// </summary>
         /// <param name="userName"></param>
         /// <returns></returns>

@@ -33,7 +33,8 @@ namespace Services
         /// <inheritdoc />
         public async Task<PostOutDto> GetPostAsync(int id)
         {
-            var post = await _blogContext.Posts.Include(i => i.Images).Include(p=>p.Author).SingleOrDefaultAsync(p => p.Id == id);
+            var post = await _blogContext.Posts.Include(i => i.Images).Include(p => p.Author)
+                .SingleOrDefaultAsync(p => p.Id == id);
             if (post == null)
                 return null;
 
@@ -48,7 +49,8 @@ namespace Services
         }
 
         /// <inheritdoc />
-        public async Task<PostOutDto> CreatePostAsync(string text, IFormFileCollection images, User user) //TODO возврат поста
+        public async Task<PostOutDto>
+            CreatePostAsync(string text, IFormFileCollection images, User user) //TODO возврат поста
         {
             var author = await _blogContext.Users.SingleOrDefaultAsync(p => p.UserName == user.UserName);
             var post = new Post
@@ -73,9 +75,10 @@ namespace Services
         }
 
         /// <inheritdoc />
-        public async Task<string> VoteAsync(int postId, User user,Vote vote)
+        public async Task<string> VoteAsync(int postId, User user, Vote vote)
         {
-            var post = await _blogContext.Posts.Include(p => p.Voters.Where(u => u.User == user)).FirstOrDefaultAsync(i=>i.Id == postId);
+            var post = await _blogContext.Posts.Include(p => p.Voters.Where(u => u.User == user))
+                .FirstOrDefaultAsync(i => i.Id == postId);
             if (post == null)
                 throw new NotFoundException($"Пост с id {postId} не найден");
 
@@ -90,7 +93,7 @@ namespace Services
                 else
                     post.Rating--;
 
-                post.Voters.Add(new Voter() { User = user, Vote = vote });
+                post.Voters.Add(new Voter {User = user, Vote = vote});
             }
             else
             {
@@ -102,20 +105,21 @@ namespace Services
                 voter.Vote = vote;
             }
 
-          await _blogContext.SaveChangesAsync().ConfigureAwait(false);
-          return post.Rating.ToString();
+            await _blogContext.SaveChangesAsync().ConfigureAwait(false);
+            return post.Rating.ToString();
         }
 
         /// <inheritdoc />
         public async Task<string> RemovePostAsync(int postId, User user)
         {
-            var post = await _blogContext.Posts.Include(p=>p.Author).SingleOrDefaultAsync(p=>p.Id==postId).ConfigureAwait(false);
+            var post = await _blogContext.Posts.Include(p => p.Author).SingleOrDefaultAsync(p => p.Id == postId)
+                .ConfigureAwait(false);
             if (post == null)
                 throw new NotFoundException($"Пост с Id {postId} не найден.");
 
             if (post.Author.Id != user.Id)
                 return "Пост может удалить только автор";
-            
+
             _blogContext.Posts.Remove(post);
             await _blogContext.SaveChangesAsync().ConfigureAwait(false);
 

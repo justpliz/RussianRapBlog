@@ -23,12 +23,12 @@ namespace Dto
         public List<byte[]> Images { get; set; }
 
         /// <summary>
-        /// Рейтинг поста
+        ///     Рейтинг поста
         /// </summary>
         public int Rating { get; set; }
 
         /// <summary>
-        /// Автор поста
+        ///     Автор поста
         /// </summary>
         public string Author { get; set; }
     }

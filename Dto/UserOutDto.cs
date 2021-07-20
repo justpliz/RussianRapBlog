@@ -1,25 +1,23 @@
-﻿using System.Data;
-
-namespace Dto
+﻿namespace Dto
 {
     /// <summary>
-    /// Дто вывода пользователя
+    ///     Дто вывода пользователя
     /// </summary>
     public class UserOutDto
     {
         /// <summary>
-        /// Имя пользователя
+        ///     Имя пользователя
         /// </summary>
         public string UserName { get; set; }
 
         /// <summary>
-        /// Описание пользователя
+        ///     Описание пользователя
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// Рейтинг пользователя
+        ///     Рейтинг пользователя
         /// </summary>
-        public int Rating { get; set; } 
+        public int Rating { get; set; }
     }
 }

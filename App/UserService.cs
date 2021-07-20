@@ -4,9 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-
 using Database;
-
 using Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,11 +22,11 @@ namespace Services
     /// <inheritdoc />
     public class UserService : IUserService
     {
+        private readonly RussianRapBlogContext _context;
         private readonly JWT _jwt;
         private readonly ILogger<UserService> _logger;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
-        private readonly RussianRapBlogContext _context;
 
         public UserService(UserManager<User> userManager, RoleManager<IdentityRole> roleManager,
             IOptions<JWT> jwt, ILogger<UserService> logger, RussianRapBlogContext context)
@@ -97,6 +95,24 @@ namespace Services
             return authenticationDto;
         }
 
+        /// <inheritdoc />
+        public async Task<UserOutDto> GetUserAsync(string userName)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(p =>
+                p.UserName.ToLower().IndexOf(userName.Trim().ToLower()) >= 0);
+            if (user == null)
+                throw new NotFoundException($"Пользователь с именем {userName} не найден");
+
+            var rating = await UpdateUserRating(user);
+
+            return new UserOutDto
+            {
+                UserName = user.UserName,
+                Description = user.Description,
+                Rating = rating
+            };
+        }
+
         private async Task<JwtSecurityToken> CreateJwtToken(User user)
         {
             var userClaims = await _userManager.GetClaimsAsync(user).ConfigureAwait(false);
@@ -122,26 +138,9 @@ namespace Services
             return jwtSecurityToken;
         }
 
-        /// <inheritdoc/>
-        public async Task<UserOutDto> GetUserAsync(string userName)
-        {
-            var user = await _context.Users.SingleOrDefaultAsync(p=>p.UserName.ToLower().IndexOf(userName.Trim().ToLower())>=0);
-            if (user == null)
-                throw new NotFoundException($"Пользователь с именем {userName} не найден");
-
-            var rating = await UpdateUserRating(user);
-
-            return new UserOutDto
-            {
-                UserName = user.UserName,
-                Description = user.Description,
-                Rating = rating
-            };
-        }
-
         private async Task<int> UpdateUserRating(User user)
         {
-            var rating = await _context.Posts.Where(p => p.Author == user).SumAsync(r=>r.Rating);
+            var rating = await _context.Posts.Where(p => p.Author == user).SumAsync(r => r.Rating);
             user.Rating = rating;
             await _context.SaveChangesAsync();
             return rating;
