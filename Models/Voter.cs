@@ -6,7 +6,7 @@ namespace Models
     /// <summary>
     /// Запись об оценке поста
     /// </summary>
-    public class Voter:IEntity 
+    public class Voter : IEntity 
     {
         /// <summary>
         /// Id записи
