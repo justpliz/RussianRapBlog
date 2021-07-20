@@ -58,7 +58,7 @@ namespace Services
                 Images = await SplitImages(images).ConfigureAwait(false),
                 Author = author
             };
-            await _blogContext.Posts.AddAsync(post);
+            await _blogContext.Posts.AddAsync(post).ConfigureAwait(false);
 
             await _blogContext.SaveChangesAsync().ConfigureAwait(false);
 
@@ -104,6 +104,22 @@ namespace Services
 
           await _blogContext.SaveChangesAsync().ConfigureAwait(false);
           return post.Rating.ToString();
+        }
+
+        /// <inheritdoc />
+        public async Task<string> RemovePostAsync(int postId, User user)
+        {
+            var post = await _blogContext.Posts.Include(p=>p.Author).SingleOrDefaultAsync(p=>p.Id==postId).ConfigureAwait(false);
+            if (post == null)
+                throw new NotFoundException($"Пост с Id {postId} не найден.");
+
+            if (post.Author.Id != user.Id)
+                return "Пост может удалить только автор";
+            
+            _blogContext.Posts.Remove(post);
+            await _blogContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return $"Пост {postId} успешно удален";
         }
 
         private static async Task<List<ImageModel>> SplitImages(IFormFileCollection images)

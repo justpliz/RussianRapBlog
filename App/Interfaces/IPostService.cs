@@ -34,5 +34,13 @@ namespace Services.Interfaces
         /// <param name="user"></param>
         /// <returns></returns>
         Task<string> VoteAsync(int postId, User user, Vote vote);
+
+        /// <summary>
+        /// Удалить пост
+        /// </summary>
+        /// <param name=""></param>
+        /// <param name=""></param>
+        /// <returns></returns>
+        Task<string> RemovePostAsync(int postId,User user);
     }
 }
