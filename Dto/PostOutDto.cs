@@ -21,5 +21,15 @@ namespace Dto
         ///     Изображения
         /// </summary>
         public List<byte[]> Images { get; set; }
+
+        /// <summary>
+        ///     Рейтинг поста
+        /// </summary>
+        public int Rating { get; set; }
+
+        /// <summary>
+        ///     Автор поста
+        /// </summary>
+        public string Author { get; set; }
     }
 }

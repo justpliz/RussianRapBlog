@@ -16,10 +16,6 @@ namespace RussianRapBlog.Extensions
                 options.UseNpgsql(
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly(typeof(RussianRapBlogContext).Assembly.FullName)));
-            services.AddDbContext<IdentityDbContext>(options =>
-                options.UseNpgsql(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(IdentityDbContext).Assembly.FullName)));
         }
     }
 }

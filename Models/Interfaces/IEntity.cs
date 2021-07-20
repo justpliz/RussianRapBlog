@@ -1,12 +1,12 @@
 ﻿namespace Models.Interfaces
 {
     /// <summary>
-    /// Интерфейс для сущностей
+    ///     Интерфейс для сущностей
     /// </summary>
     public interface IEntity
     {
         /// <summary>
-        /// Идентификатор
+        ///     Идентификатор
         /// </summary>
         public int Id { get; set; }
     }

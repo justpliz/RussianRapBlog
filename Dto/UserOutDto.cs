@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace Models
+﻿namespace Dto
 {
     /// <summary>
-    ///     Пользователь
+    ///     Дто вывода пользователя
     /// </summary>
-    public class User : IdentityUser
+    public class UserOutDto
     {
+        /// <summary>
+        ///     Имя пользователя
+        /// </summary>
+        public string UserName { get; set; }
+
         /// <summary>
         ///     Описание пользователя
         /// </summary>

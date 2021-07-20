@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 
@@ -32,11 +33,28 @@ namespace RussianRapBlog.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        ///     Получить токен авторизации
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost("token")]
         public async Task<IActionResult> GetTokenAsync(TokenRequestDto dto)
         {
             var result = await _userService.GetTokenAsync(dto).ConfigureAwait(false);
             return Ok(result);
+        }
+
+        /// <summary>
+        ///     Получить данные о пользователе
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<UserOutDto> GetUserAsync(string userName)
+        {
+            return await _userService.GetUserAsync(userName).ConfigureAwait(false);
         }
     }
 }
